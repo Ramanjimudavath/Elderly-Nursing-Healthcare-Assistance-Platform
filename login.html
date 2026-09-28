@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - ElderlyCare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="data-service.js"></script>
+    <style>
+      #three-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        pointer-events: none;
+      }
+      body {
+        background: transparent;
+        color: #e2e8f0;
+        margin: 0;
+        padding: 0;
+      }
+      .bg-glass {
+        background: rgba(15, 23, 42, 0.7) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      }
+      input {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: #e2e8f0 !important;
+        border-radius: 0.5rem !important;
+      }
+      input:focus {
+        outline: 2px solid #3b82f6 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="three-bg"></div>
+
+    <div
+      class="min-h-screen flex items-center justify-center px-4 relative z-10"
+    >
+      <div class="bg-glass rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <div class="text-center mb-8">
+          <i class="fas fa-heartbeat text-red-500 text-4xl mb-2"></i>
+          <h2 class="text-3xl font-bold">Welcome Back</h2>
+          <p class="text-gray-400 text-sm">
+            Sign in to manage your elderly care services
+          </p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex mb-6 border-b border-white/10">
+          <button
+            onclick="toggleAuth('login')"
+            id="tab-login"
+            class="flex-1 pb-2 text-center font-semibold text-blue-400 border-b-2 border-blue-400 transition"
+          >
+            Login
+          </button>
+          <button
+            onclick="toggleAuth('register')"
+            id="tab-register"
+            class="flex-1 pb-2 text-center font-semibold text-gray-400 hover:text-white transition"
+          >
+            Register
+          </button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-400"
+              >Email Address</label
+            >
+            <input
+              type="email"
+              id="loginEmail"
+              required
+              placeholder="john@example.com"
+              class="w-full mt-1 p-3"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-400"
+              >Password</label
+            >
+            <input
+              type="password"
+              id="loginPassword"
+              required
+              placeholder="••••••••"
+              class="w-full mt-1 p-3"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-500/30 mt-2"
+          >
+            <i class="fas fa-sign-in-alt mr-2"></i> Login
+          </button>
+          <div
+            id="loginError"
+            class="hidden text-red-400 text-sm text-center mt-2"
+          ></div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="space-y-4 hidden">
+          <div>
+            <label class="block text-sm font-medium text-gray-400"
+              >Full Name</label
+            >
+            <input
+              type="text"
+              id="regName"
+              required
+              placeholder="John Doe"
+              class="w-full mt-1 p-3"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-400"
+              >Email Address</label
+            >
+            <input
+              type="email"
+              id="regEmail"
+              required
+              placeholder="john@example.com"
+              class="w-full mt-1 p-3"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-400"
+              >Password (min 6 chars)</label
+            >
+            <input
+              type="password"
+              id="regPassword"
+              required
+              minlength="6"
+              placeholder="••••••••"
+              class="w-full mt-1 p-3"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition shadow-lg shadow-green-500/30 mt-2"
+          >
+            <i class="fas fa-user-plus mr-2"></i> Create Account
+          </button>
+          <div
+            id="regError"
+            class="hidden text-red-400 text-sm text-center mt-2"
+          ></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ====== 3D ANIMATION ENGINE ====== -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+      const container = document.getElementById("three-bg");
+      const scene = new THREE.Scene();
+      const canvas = document.createElement("canvas");
+      canvas.width = 2;
+      canvas.height = 512;
+      const ctx = canvas.getContext("2d");
+      const gradient = ctx.createLinearGradient(0, 0, 0, 512);
+      gradient.addColorStop(0, "#0a1628");
+      gradient.addColorStop(0.5, "#0f2847");
+      gradient.addColorStop(1, "#1a365d");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 2, 512);
+      scene.background = new THREE.CanvasTexture(canvas);
+      const camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000,
+      );
+      camera.position.set(0, 0, 10);
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: false,
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.5;
+      container.appendChild(renderer.domElement);
+      scene.add(new THREE.AmbientLight(0x88bbff, 0.6));
+      const dirLight = new THREE.DirectionalLight(0xffffff, 2.0);
+      dirLight.position.set(5, 5, 5);
+      scene.add(dirLight);
+      scene.add(new THREE.PointLight(0x3b82f6, 2.0).position.set(-5, 0, -5));
+      scene.add(new THREE.PointLight(0xec4899, 1.2).position.set(5, -3, -2));
+      scene.add(new THREE.PointLight(0x60a5fa, 1.5).position.set(0, 5, 0));
+      const group = new THREE.Group();
+      const ringMat = new THREE.MeshStandardMaterial({
+        color: 0x3b82f6,
+        emissive: 0x3b82f6,
+        emissiveIntensity: 0.8,
+        transparent: true,
+        opacity: 0.9,
+      });
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(2.2, 0.06, 16, 100),
+        ringMat,
+      );
+      ring.rotation.x = Math.PI / 2;
+      group.add(ring);
+      const crossGroup = new THREE.Group();
+      const barMat = new THREE.MeshStandardMaterial({
+        color: 0xef4444,
+        emissive: 0xef4444,
+        emissiveIntensity: 1.2,
+      });
+      crossGroup.add(
+        new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.2, 0.2), barMat),
+      );
+      crossGroup.add(
+        new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.4, 0.2), barMat),
+      );
+      crossGroup.position.set(0, 0, 0.5);
+      group.add(crossGroup);
+      const pCount = 800;
+      const pGeo = new THREE.BufferGeometry();
+      const pPos = new Float32Array(pCount * 3);
+      const pCol = new Float32Array(pCount * 3);
+      for (let i = 0; i < pCount; i++) {
+        pPos[i * 3] = (Math.random() - 0.5) * 24;
+        pPos[i * 3 + 1] = (Math.random() - 0.5) * 16;
+        pPos[i * 3 + 2] = (Math.random() - 0.5) * 10;
+        const c = new THREE.Color().setHSL(
+          0.55 + Math.random() * 0.2,
+          0.9,
+          0.5 + Math.random() * 0.3,
+        );
+        pCol[i * 3] = c.r;
+        pCol[i * 3 + 1] = c.g;
+        pCol[i * 3 + 2] = c.b;
+      }
+      pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+      pGeo.setAttribute("color", new THREE.BufferAttribute(pCol, 3));
+      group.add(
+        new THREE.Points(
+          pGeo,
+          new THREE.PointsMaterial({
+            size: 0.05,
+            transparent: true,
+            opacity: 0.9,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+          }),
+        ),
+      );
+      scene.add(group);
+      function animate() {
+        requestAnimationFrame(animate);
+        group.rotation.y += 0.005;
+        group.rotation.x = Math.sin(Date.now() * 0.0004) * 0.1;
+        const scale = 1 + Math.sin(Date.now() * 0.003) * 0.08;
+        crossGroup.scale.set(scale, scale, scale);
+        renderer.render(scene, camera);
+      }
+      animate();
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+
+    <script>
+      function toggleAuth(type) {
+        document.getElementById("tab-login").className =
+          type === "login"
+            ? "flex-1 pb-2 text-center font-semibold text-blue-400 border-b-2 border-blue-400 transition"
+            : "flex-1 pb-2 text-center font-semibold text-gray-400 hover:text-white transition";
+        document.getElementById("tab-register").className =
+          type === "register"
+            ? "flex-1 pb-2 text-center font-semibold text-blue-400 border-b-2 border-blue-400 transition"
+            : "flex-1 pb-2 text-center font-semibold text-gray-400 hover:text-white transition";
+        document.getElementById("loginForm").className =
+          type === "login" ? "space-y-4" : "space-y-4 hidden";
+        document.getElementById("registerForm").className =
+          type === "register" ? "space-y-4" : "space-y-4 hidden";
+        document.getElementById("loginError").classList.add("hidden");
+        document.getElementById("regError").classList.add("hidden");
+      }
+
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const email = document.getElementById("loginEmail").value;
+          const password = document.getElementById("loginPassword").value;
+          const result = loginUser(email, password);
+
+          if (result.success) {
+            // Force conversion to Number to ensure strict type matching
+            const id = Number(result.user.id);
+            localStorage.setItem("currentUserId", id);
+            localStorage.setItem("userRole", result.user.role);
+
+            // Redirect Admin to Admin Dashboard, Regular User to Index
+            if (result.user.role === "admin") {
+              window.location.href = "admin-dashboard.html";
+            } else {
+              window.location.href = "index.html";
+            }
+          } else {
+            const err = document.getElementById("loginError");
+            err.textContent = result.message;
+            err.classList.remove("hidden");
+          }
+        });
+
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const name = document.getElementById("regName").value;
+          const email = document.getElementById("regEmail").value;
+          const password = document.getElementById("regPassword").value;
+          const result = registerUser(name, email, password);
+          if (result.success) {
+            const id = Number(result.user.id);
+            localStorage.setItem("currentUserId", id);
+            localStorage.setItem("userRole", result.user.role);
+            window.location.href = "index.html";
+          } else {
+            const err = document.getElementById("regError");
+            err.textContent = result.message;
+            err.classList.remove("hidden");
+          }
+        });
+    </script>
+  </body>
+</html>
